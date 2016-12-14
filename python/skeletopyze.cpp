@@ -13,30 +13,12 @@
 #include <imageprocessing/ExplicitVolume.h>
 #include <imageprocessing/Skeletonize.h>
 #include "logging.h"
+#include "iterators.h"
 
 template <typename Map, typename K, typename V>
 const V& genericGetter(const Map& map, const K& k) { return map[k]; }
 template <typename Map, typename K, typename V>
 void genericSetter(Map& map, const K& k, const V& value) { map[k] = value; }
-
-template <typename V>
-std::vector<V> list_to_vec(boost::python::list l) {
-	std::vector<V> vec;
-	for (int i = 0; i < boost::python::len(l); ++i) {
-		vec.push_back(boost::python::extract<V>(l[i]));
-	}
-	return vec;
-}
-
-template <typename Map, typename K, typename V, typename D>
-void featuresSetter(Map& map, const K& k, const V& value) { 
-	map.set(k, list_to_vec<D>(value));
-}
-
-template <typename Map, typename K, typename V, typename D>
-void weightSetter(Map& map, const K& k, const V& value) { 
-	map[k] = list_to_vec<D>(value);
-}
 
 #if defined __clang__ && __clang_major__ < 6
 // std::shared_ptr support
@@ -80,6 +62,16 @@ GraphVolume skeletonize_ndarray(PyObject* array) {
 
 	std::cout << "getting skeleton" << std::endl;
 	return skeletonizer.getSkeleton();
+}
+
+GraphVolumeNodes graph_volume_nodes(const GraphVolume& graphVolume) {
+
+	return GraphVolumeNodes(graphVolume);
+}
+
+GraphVolumeEdges graph_volume_edges(const GraphVolume& graphVolume) {
+
+	return GraphVolumeEdges(graphVolume);
 }
 
 /**
@@ -180,8 +172,24 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 					util::point<float,3>, float>, boost::python::return_value_policy<boost::python::copy_const_reference>())
 			;
 
+	// iterators
+	boost::python::class_<GraphVolumeNodes>("GraphVolumeNodes", boost::python::no_init)
+			.def("__iter__", boost::python::iterator<GraphVolumeNodes>())
+			;
+	boost::python::class_<GraphVolumeEdges>("GraphVolumeEdges", boost::python::no_init)
+			.def("__iter__", boost::python::iterator<GraphVolumeEdges>())
+			;
+
+	// "Edges"
+	boost::python::class_<std::pair<size_t, size_t>>("GraphVolumeEdge")
+			.def_readwrite("u", &std::pair<size_t, size_t>::first)
+			.def_readwrite("v", &std::pair<size_t, size_t>::second)
+			;
+
 	// GraphVolume
 	boost::python::class_<GraphVolume>("GraphVolume")
+			.def("nodes", &graph_volume_nodes)
+			.def("edges", &graph_volume_edges)
 			;
 
 	// skeletonize()
