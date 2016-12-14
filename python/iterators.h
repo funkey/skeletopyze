@@ -1,88 +1,88 @@
 #ifndef SKELETOPYZE_PYTHON_ITERATORS_H__
 #define SKELETOPYZE_PYTHON_ITERATORS_H__
 
-#include <imageprocessing/GraphVolume.h>
+#include <imageprocessing/Skeleton.h>
 
-class GraphVolumeNodeIterator : public std::iterator<std::input_iterator_tag, size_t> {
+class SkeletonNodeIterator : public std::iterator<std::input_iterator_tag, size_t> {
 
-	const GraphVolume& _graphVolume;
-	GraphVolume::Graph::NodeIt _it;
+	const Skeleton& _graphVolume;
+	Skeleton::Graph::NodeIt _it;
 
 public:
 
-	GraphVolumeNodeIterator(const GraphVolume& g)
+	SkeletonNodeIterator(const Skeleton& g)
 		: _graphVolume(g), _it(g.graph()) {}
 
-	GraphVolumeNodeIterator(const GraphVolumeNodeIterator& i)
+	SkeletonNodeIterator(const SkeletonNodeIterator& i)
 		: _graphVolume(i._graphVolume), _it(i._it) {}
 
-	GraphVolumeNodeIterator(const GraphVolume& g, const lemon::Invalid& i)
+	SkeletonNodeIterator(const Skeleton& g, const lemon::Invalid& i)
 		: _graphVolume(g), _it(i) {}
 
-	GraphVolumeNodeIterator& operator++() {
+	SkeletonNodeIterator& operator++() {
 
 		++_it;
 		return *this;
 	}
 
-	GraphVolumeNodeIterator operator++(int) {
+	SkeletonNodeIterator operator++(int) {
 
-		GraphVolumeNodeIterator tmp(*this);
+		SkeletonNodeIterator tmp(*this);
 		operator++();
 		return tmp;
 	}
 
-	bool operator==(const GraphVolumeNodeIterator& rhs) {
+	bool operator==(const SkeletonNodeIterator& rhs) {
 
 		return _it == rhs._it;
 	}
 
-	bool operator!=(const GraphVolumeNodeIterator& rhs) {
+	bool operator!=(const SkeletonNodeIterator& rhs) {
 
 		return _it != rhs._it;
 	}
 
 	size_t operator*() {
 
-		return _graphVolume.graph().id(GraphVolume::Graph::Node(_it));
+		return _graphVolume.graph().id(Skeleton::Graph::Node(_it));
 	}
 };
 
-class GraphVolumeEdgeIterator : public std::iterator<std::input_iterator_tag, std::pair<size_t, size_t>> {
+class SkeletonEdgeIterator : public std::iterator<std::input_iterator_tag, std::pair<size_t, size_t>> {
 
-	const GraphVolume& _graphVolume;
-	GraphVolume::Graph::EdgeIt _it;
+	const Skeleton& _graphVolume;
+	Skeleton::Graph::EdgeIt _it;
 
 public:
 
-	GraphVolumeEdgeIterator(const GraphVolume& g)
+	SkeletonEdgeIterator(const Skeleton& g)
 		: _graphVolume(g), _it(g.graph()) {}
 
-	GraphVolumeEdgeIterator(const GraphVolumeEdgeIterator& i)
+	SkeletonEdgeIterator(const SkeletonEdgeIterator& i)
 		: _graphVolume(i._graphVolume), _it(i._it) {}
 
-	GraphVolumeEdgeIterator(const GraphVolume& g, const lemon::Invalid& i)
+	SkeletonEdgeIterator(const Skeleton& g, const lemon::Invalid& i)
 		: _graphVolume(g), _it(i) {}
 
-	GraphVolumeEdgeIterator& operator++() {
+	SkeletonEdgeIterator& operator++() {
 
 		++_it;
 		return *this;
 	}
 
-	GraphVolumeEdgeIterator operator++(int) {
+	SkeletonEdgeIterator operator++(int) {
 
-		GraphVolumeEdgeIterator tmp(*this);
+		SkeletonEdgeIterator tmp(*this);
 		operator++();
 		return tmp;
 	}
 
-	bool operator==(const GraphVolumeEdgeIterator& rhs) {
+	bool operator==(const SkeletonEdgeIterator& rhs) {
 
 		return _it == rhs._it;
 	}
 
-	bool operator!=(const GraphVolumeEdgeIterator& rhs) {
+	bool operator!=(const SkeletonEdgeIterator& rhs) {
 
 		return _it != rhs._it;
 	}
@@ -95,69 +95,69 @@ public:
 	}
 };
 
-class GraphVolumeNodes {
+class SkeletonNodes {
 
-	friend class GraphVolume;
+	friend class Skeleton;
 
-	const GraphVolume& _graphVolume;
+	const Skeleton& _graphVolume;
 
 public:
 
-	typedef GraphVolumeNodeIterator iterator;
-	typedef const GraphVolumeNodeIterator const_iterator;
+	typedef SkeletonNodeIterator iterator;
+	typedef const SkeletonNodeIterator const_iterator;
 
-	GraphVolumeNodes(const GraphVolume& g) : _graphVolume(g) {}
+	SkeletonNodes(const Skeleton& g) : _graphVolume(g) {}
 
-	GraphVolumeNodeIterator begin() const {
+	SkeletonNodeIterator begin() const {
 
-		return GraphVolumeNodeIterator(_graphVolume);
+		return SkeletonNodeIterator(_graphVolume);
 	}
 
-	GraphVolumeNodeIterator end() const {
+	SkeletonNodeIterator end() const {
 
-		return GraphVolumeNodeIterator(_graphVolume, lemon::INVALID);
+		return SkeletonNodeIterator(_graphVolume, lemon::INVALID);
 	}
 
-	GraphVolumeNodeIterator cbegin() const {
+	SkeletonNodeIterator cbegin() const {
 
 		return begin();
 	}
 
-	GraphVolumeNodeIterator cend() const {
+	SkeletonNodeIterator cend() const {
 
 		return end();
 	}
 };
 
-class GraphVolumeEdges {
+class SkeletonEdges {
 
-	friend class GraphVolume;
+	friend class Skeleton;
 
-	const GraphVolume& _graphVolume;
+	const Skeleton& _graphVolume;
 
 public:
 
-	GraphVolumeEdges(const GraphVolume& g) : _graphVolume(g) {}
+	SkeletonEdges(const Skeleton& g) : _graphVolume(g) {}
 
-	typedef GraphVolumeEdgeIterator iterator;
-	typedef const GraphVolumeEdgeIterator const_iterator;
+	typedef SkeletonEdgeIterator iterator;
+	typedef const SkeletonEdgeIterator const_iterator;
 
-	GraphVolumeEdgeIterator begin() const {
+	SkeletonEdgeIterator begin() const {
 
-		return GraphVolumeEdgeIterator(_graphVolume);
+		return SkeletonEdgeIterator(_graphVolume);
 	}
 
-	GraphVolumeEdgeIterator end() const {
+	SkeletonEdgeIterator end() const {
 
-		return GraphVolumeEdgeIterator(_graphVolume, lemon::INVALID);
+		return SkeletonEdgeIterator(_graphVolume, lemon::INVALID);
 	}
 
-	GraphVolumeEdgeIterator cbegin() const {
+	SkeletonEdgeIterator cbegin() const {
 
 		return begin();
 	}
 
-	GraphVolumeEdgeIterator cend() const {
+	SkeletonEdgeIterator cend() const {
 
 		return end();
 	}
@@ -170,7 +170,7 @@ namespace std {
 #endif
 
 template <>
-struct iterator_traits<GraphVolumeNodeIterator> {
+struct iterator_traits<SkeletonNodeIterator> {
 
 	typedef size_t value_type;
 	typedef size_t reference;
@@ -179,7 +179,7 @@ struct iterator_traits<GraphVolumeNodeIterator> {
 };
 
 template <>
-struct iterator_traits<GraphVolumeEdgeIterator> {
+struct iterator_traits<SkeletonEdgeIterator> {
 
 	typedef std::pair<size_t, size_t> value_type;
 	typedef std::pair<size_t, size_t> reference;

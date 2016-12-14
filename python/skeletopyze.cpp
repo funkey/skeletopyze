@@ -50,7 +50,7 @@ void init_numpy() {
 	imparr();
 }
 
-GraphVolume skeletonize_ndarray_params(PyObject* array, const Skeletonize::Parameters& parameters) {
+Skeleton skeletonize_ndarray_params(PyObject* array, const Skeletonize::Parameters& parameters) {
 
 	ExplicitVolume<int> volume = volumeFromNumpyArray<int>(array);
 
@@ -64,24 +64,29 @@ GraphVolume skeletonize_ndarray_params(PyObject* array, const Skeletonize::Param
 	return skeletonizer.getSkeleton();
 }
 
-GraphVolume skeletonize_ndarray(PyObject* array) {
+Skeleton skeletonize_ndarray(PyObject* array) {
 
 	return skeletonize_ndarray_params(array, Skeletonize::Parameters());
 }
 
-GraphVolumeNodes graph_volume_nodes(const GraphVolume& graphVolume) {
+SkeletonNodes skeleton_nodes(const Skeleton& skeleton) {
 
-	return GraphVolumeNodes(graphVolume);
+	return SkeletonNodes(skeleton);
 }
 
-GraphVolumeEdges graph_volume_edges(const GraphVolume& graphVolume) {
+SkeletonEdges skeleton_edges(const Skeleton& skeleton) {
 
-	return GraphVolumeEdges(graphVolume);
+	return SkeletonEdges(skeleton);
 }
 
-util::point<unsigned int,3> graph_volume_locations(const GraphVolume& graphVolume, size_t n) {
+util::point<unsigned int,3> skeleton_locations(const Skeleton& skeleton, size_t n) {
 
-	return graphVolume.positions()[graphVolume.graph().nodeFromId(n)];
+	return skeleton.positions()[skeleton.graph().nodeFromId(n)];
+}
+
+float skeleton_diameters(const Skeleton& skeleton, size_t n) {
+
+	return skeleton.diameters()[skeleton.graph().nodeFromId(n)];
 }
 
 /**
@@ -183,24 +188,25 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 			;
 
 	// iterators
-	boost::python::class_<GraphVolumeNodes>("GraphVolumeNodes", boost::python::no_init)
-			.def("__iter__", boost::python::iterator<GraphVolumeNodes>())
+	boost::python::class_<SkeletonNodes>("SkeletonNodes", boost::python::no_init)
+			.def("__iter__", boost::python::iterator<SkeletonNodes>())
 			;
-	boost::python::class_<GraphVolumeEdges>("GraphVolumeEdges", boost::python::no_init)
-			.def("__iter__", boost::python::iterator<GraphVolumeEdges>())
+	boost::python::class_<SkeletonEdges>("SkeletonEdges", boost::python::no_init)
+			.def("__iter__", boost::python::iterator<SkeletonEdges>())
 			;
 
 	// "Edges"
-	boost::python::class_<std::pair<size_t, size_t>>("GraphVolumeEdge")
+	boost::python::class_<std::pair<size_t, size_t>>("SkeletonEdge")
 			.def_readwrite("u", &std::pair<size_t, size_t>::first)
 			.def_readwrite("v", &std::pair<size_t, size_t>::second)
 			;
 
-	// GraphVolume
-	boost::python::class_<GraphVolume>("GraphVolume")
-			.def("nodes", &graph_volume_nodes)
-			.def("edges", &graph_volume_edges)
-			.def("locations", &graph_volume_locations)
+	// Skeleton
+	boost::python::class_<Skeleton>("Skeleton")
+			.def("nodes", &skeleton_nodes)
+			.def("edges", &skeleton_edges)
+			.def("locations", &skeleton_locations)
+			.def("diameters", &skeleton_diameters)
 			;
 
 	// Skeletonize::Parameters
