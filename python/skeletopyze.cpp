@@ -2,9 +2,16 @@
 #include <boost/python/exception_translator.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
+#include <config.h>
+#ifdef HAVE_NUMPY
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
+#endif
+
 #include <util/exceptions.h>
 #include <util/ProgramOptions.h>
 #include <imageprocessing/ExplicitVolume.h>
+#include <imageprocessing/Skeletonize.h>
 #include "logging.h"
 
 template <typename Map, typename K, typename V>
@@ -50,6 +57,31 @@ void translateException(const Exception& e) {
 		PyErr_SetString(PyExc_RuntimeError, e.what());
 }
 
+void init_numpy() {
+
+	std::cout << "Initialize numpy" << std::endl;
+
+	// import_array is a macro expanding to returning different types across 
+	// different versions of the NumPy API. This lambda hack works around 
+	// that.
+	auto imparr = []{ import_array(); };
+	imparr();
+}
+
+GraphVolume skeletonize_ndarray(PyObject* array) {
+
+	ExplicitVolume<int> volume = volumeFromNumpyArray<int>(array);
+
+	std::cout << "creating graph volume" << std::endl;
+	GraphVolume graphVolume(volume);
+
+	std::cout << "creating skeletonizer" << std::endl;
+	Skeletonize skeletonizer(graphVolume);
+
+	std::cout << "getting skeleton" << std::endl;
+	return skeletonizer.getSkeleton();
+}
+
 /**
  * Defines all the python classes in the module libskeletopyze. Here we decide 
  * which functions and data members we wish to expose.
@@ -57,6 +89,8 @@ void translateException(const Exception& e) {
 BOOST_PYTHON_MODULE(skeletopyze) {
 
 	boost::python::register_exception_translator<Exception>(&translateException);
+
+	init_numpy();
 
 	// Logging
 	boost::python::enum_<logger::LogLevel>("LogLevel")
@@ -145,6 +179,13 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 			.def("__getitem__", &genericGetter<ExplicitVolume<float>,
 					util::point<float,3>, float>, boost::python::return_value_policy<boost::python::copy_const_reference>())
 			;
+
+	// GraphVolume
+	boost::python::class_<GraphVolume>("GraphVolume")
+			;
+
+	// skeletonize()
+	boost::python::def("get_skeleton_graph", skeletonize_ndarray);
 
 	boost::python::def("volumeFromIntNumpyArray", volumeFromNumpyArray<int>);
 }
