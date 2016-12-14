@@ -79,6 +79,11 @@ GraphVolumeEdges graph_volume_edges(const GraphVolume& graphVolume) {
 	return GraphVolumeEdges(graphVolume);
 }
 
+util::point<unsigned int,3> graph_volume_locations(const GraphVolume& graphVolume, size_t n) {
+
+	return graphVolume.positions()[graphVolume.graph().nodeFromId(n)];
+}
+
 /**
  * Defines all the python classes in the module libskeletopyze. Here we decide 
  * which functions and data members we wish to expose.
@@ -112,16 +117,16 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 			.def("__setitem__", &genericSetter<util::point<float,3>, int, float>)
 			;
 
-	// util::point<int, 3>
-	boost::python::class_<util::point<int, 3>>("point_i3")
-			.def("x", static_cast<const int&(util::point<int, 3>::*)() const>(&util::point<int, 3>::x),
+	// util::point<unsinged int, 3>
+	boost::python::class_<util::point<unsigned int, 3>>("point_ui3")
+			.def("x", static_cast<const unsigned int&(util::point<unsigned int, 3>::*)() const>(&util::point<unsigned int, 3>::x),
 					boost::python::return_value_policy<boost::python::copy_const_reference>())
-			.def("y", static_cast<const int&(util::point<int, 3>::*)() const>(&util::point<int, 3>::y),
+			.def("y", static_cast<const unsigned int&(util::point<unsigned int, 3>::*)() const>(&util::point<unsigned int, 3>::y),
 					boost::python::return_value_policy<boost::python::copy_const_reference>())
-			.def("z", static_cast<const int&(util::point<int, 3>::*)() const>(&util::point<int, 3>::z),
+			.def("z", static_cast<const unsigned int&(util::point<unsigned int, 3>::*)() const>(&util::point<unsigned int, 3>::z),
 					boost::python::return_value_policy<boost::python::copy_const_reference>())
-			.def("__getitem__", &genericGetter<util::point<int,3>, int, int>, boost::python::return_value_policy<boost::python::copy_const_reference>())
-			.def("__setitem__", &genericSetter<util::point<int,3>, int, int>)
+			.def("__getitem__", &genericGetter<util::point<unsigned int,3>, unsigned int, unsigned int>, boost::python::return_value_policy<boost::python::copy_const_reference>())
+			.def("__setitem__", &genericSetter<util::point<unsigned int,3>, unsigned int, unsigned int>)
 			;
 
 	// util::box<T, 3> (aka bounding boxes)
@@ -195,6 +200,7 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 	boost::python::class_<GraphVolume>("GraphVolume")
 			.def("nodes", &graph_volume_nodes)
 			.def("edges", &graph_volume_edges)
+			.def("locations", &graph_volume_locations)
 			;
 
 	// Skeletonize::Parameters
