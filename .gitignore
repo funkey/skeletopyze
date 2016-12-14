@@ -1,0 +1,5 @@
+*.sw[po]
+build
+build_skeletopyze
+*.hdf
+*.kdev4

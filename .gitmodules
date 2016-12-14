@@ -1,0 +1,9 @@
+[submodule "modules/imageprocessing"]
+	path = modules/imageprocessing
+	url = https://github.com/funkey/imageprocessing
+[submodule "modules/util"]
+	path = modules/util
+	url = https://github.com/funkey/util
+[submodule "cmake"]
+	path = cmake
+	url = https://github.com/funkey/cmake
