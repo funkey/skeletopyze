@@ -50,7 +50,7 @@ void init_numpy() {
 	imparr();
 }
 
-GraphVolume skeletonize_ndarray(PyObject* array) {
+GraphVolume skeletonize_ndarray_params(PyObject* array, const Skeletonize::Parameters& parameters) {
 
 	ExplicitVolume<int> volume = volumeFromNumpyArray<int>(array);
 
@@ -58,10 +58,15 @@ GraphVolume skeletonize_ndarray(PyObject* array) {
 	GraphVolume graphVolume(volume);
 
 	std::cout << "creating skeletonizer" << std::endl;
-	Skeletonize skeletonizer(graphVolume);
+	Skeletonize skeletonizer(graphVolume, parameters);
 
 	std::cout << "getting skeleton" << std::endl;
 	return skeletonizer.getSkeleton();
+}
+
+GraphVolume skeletonize_ndarray(PyObject* array) {
+
+	return skeletonize_ndarray_params(array, Skeletonize::Parameters());
 }
 
 GraphVolumeNodes graph_volume_nodes(const GraphVolume& graphVolume) {
@@ -192,8 +197,19 @@ BOOST_PYTHON_MODULE(skeletopyze) {
 			.def("edges", &graph_volume_edges)
 			;
 
+	// Skeletonize::Parameters
+	boost::python::class_<Skeletonize::Parameters>("Parameters")
+			.def_readwrite("min_segment_length", &Skeletonize::Parameters::minSegmentLength)
+			.def_readwrite("min_segment_length_ratio", &Skeletonize::Parameters::minSegmentLengthRatio)
+			.def_readwrite("skip_explained_nodes", &Skeletonize::Parameters::skipExplainedNodes)
+			.def_readwrite("explanation_weight", &Skeletonize::Parameters::explanationWeight)
+			.def_readwrite("boundary_weight", &Skeletonize::Parameters::boundaryWeight)
+			.def_readwrite("max_num_segments", &Skeletonize::Parameters::maxNumSegments)
+			;
+
 	// skeletonize()
 	boost::python::def("get_skeleton_graph", skeletonize_ndarray);
+	boost::python::def("get_skeleton_graph", skeletonize_ndarray_params);
 
 	boost::python::def("volumeFromIntNumpyArray", volumeFromNumpyArray<int>);
 }
