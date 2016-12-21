@@ -1,4 +1,4 @@
-# skeletpyze
+# skeletopyze
 
 A simple python module to skeletonize volumes given as numpy arrays.
 
