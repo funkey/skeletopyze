@@ -43,7 +43,7 @@ setup(
     version='0.0.1',
     author='Jan Funke',
     author_email='jfunke@iri.upc.edu',
-    description='Python wrapper for the Candidate MC.',
+    description='A simple python module to skeletonize volumes given as numpy arrays.',
     packages=['skeletopyze'],
     cmdclass={'build_py' : cmake_lib}
 )
