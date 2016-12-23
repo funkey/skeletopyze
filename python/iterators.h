@@ -163,11 +163,7 @@ public:
 	}
 };
 
-#if (defined __clang__ && __clang_major__ < 6) || (defined __GNUC__ && __GNUC__ < 5)
-namespace boost { namespace detail {
-#else
 namespace std {
-#endif
 
 template <>
 struct iterator_traits<SkeletonNodeIterator> {
@@ -187,11 +183,7 @@ struct iterator_traits<SkeletonEdgeIterator> {
 	typedef typename std::forward_iterator_tag iterator_category;
 };
 
-#if (defined __clang__ && __clang_major__ < 6) || (defined __GNUC__ && __GNUC__ < 5)
-}} // namespace boost::detail
-#else
 } // namespace std
-#endif
 
 #endif // SKELETOPYZE_PYTHON_ITERATORS_H__
 
