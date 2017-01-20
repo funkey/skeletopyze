@@ -4,6 +4,24 @@ A simple python module to skeletonize volumes given as numpy arrays.
 
 # Install
 
+## Using `conda`
+
+```
+conda config --add channels ukoethe
+conda install -c funkey skeletopyze
+```
+
+## Build from source
+
+Get this repository (and submodules):
+```
+git clone https://github.com/funkey/skeletopyze
+cd skeletopyze
+git submodule update --init
+```
+
+See the `meta.yaml` for build dependencies. Once fulfilled, build an install
+with:
 ```
 python setup.py install
 ```
@@ -31,4 +49,15 @@ for n in b.nodes():
 print("Skeleton contains edges:")
 for e in b.edges():
     print (e.u, e.v)
+```
+
+# Development
+
+## Building the `conda` package
+
+```
+conda install conda-build\<2.0
+conda config --add channels ukoethe
+conda build --python 2.7 .
+conda build --python 3.5 .
 ```

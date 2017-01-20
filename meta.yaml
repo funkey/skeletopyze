@@ -1,0 +1,28 @@
+package:
+  name: skeletopyze
+  version: "0.0.1"
+
+source:
+  path: .
+
+build:
+  number: 3
+
+requirements:
+ build:
+   - cmake
+   - gcc
+   - boost
+   - python
+   - numpy
+   - vigra
+ run:
+   - libgcc
+   - boost
+   - python
+   - numpy
+   - vigra
+
+about:
+  home: https://github.com/funkey/skeletopyze
+  license: MIT License
